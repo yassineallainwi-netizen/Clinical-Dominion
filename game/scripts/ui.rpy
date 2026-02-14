@@ -12,6 +12,28 @@ style panel_frame is frame:
     background Frame(Solid("#0f172aDD"), 12, 12)
     padding (18, 14)
 
+
+
+# Asset-free fallback button styles to avoid DynamicImage lookups for missing gui/button/*.png files.
+style button:
+    background Solid("#1f2937")
+    hover_background Solid("#374151")
+    insensitive_background Solid("#111827")
+    selected_background Solid("#334155")
+    selected_hover_background Solid("#475569")
+    selected_insensitive_background Solid("#1f2937")
+    xpadding 14
+    ypadding 10
+
+style button_text:
+    color "#f9fafb"
+    hover_color "#ffffff"
+    insensitive_color "#9ca3af"
+
+style navigation_button is button
+style navigation_button_text is button_text
+style main_menu_button is button
+style main_menu_button_text is button_text
 screen hud_panel():
     frame style "panel_frame":
         xalign 0.02
