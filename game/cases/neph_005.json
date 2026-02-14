@@ -1,0 +1,543 @@
+{
+  "id": "neph_005",
+  "title": {
+    "en": "AKI on CKD with Volume Overload",
+    "fr": "IRA sur MRC avec surcharge"
+  },
+  "specialty": "Nephrology",
+  "topics": [
+    "nephrology",
+    "aki_ckd",
+    "stabilization"
+  ],
+  "startNode": "n1",
+  "correctDiagnosis": "aki_ckd",
+  "criticalActionCount": 5,
+  "difficultyEffects": {
+    "MED3": {
+      "clarity": "high",
+      "penalty": "low",
+      "timer": 0
+    },
+    "INTERN": {
+      "clarity": "high",
+      "penalty": "medium",
+      "timer": 25
+    },
+    "PGY1": {
+      "clarity": "medium",
+      "penalty": "medium",
+      "timer": 20
+    },
+    "PGY4": {
+      "clarity": "low",
+      "penalty": "high",
+      "timer": 15
+    },
+    "SPECIALIST": {
+      "clarity": "minimal",
+      "penalty": "high",
+      "timer": 12
+    }
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "background": "icu",
+      "speaker": "nurse",
+      "text": {
+        "en": "A new nephrology patient arrives. Vitals are unstable and you lead the first assessment.",
+        "fr": "Un nouveau patient de nephrology arrive. Les constantes sont instables et vous dirigez l'évaluation initiale."
+      },
+      "labs": {
+        "en": "HR 128, BP 88/54, RR 28, SpO2 91%",
+        "fr": "FC 128, TA 88/54, FR 28, SpO2 91%"
+      },
+      "choices": [
+        {
+          "id": "primary_survey",
+          "text": {
+            "en": "Perform ABC and bedside reassessment",
+            "fr": "Réaliser ABC et réévaluation au lit"
+          },
+          "next": "n2",
+          "effects": {
+            "default": {
+              "stability": 8,
+              "critical": true,
+              "resources": 1
+            }
+          },
+          "nextNodeId": "n2"
+        },
+        {
+          "id": "order_ct_first",
+          "text": {
+            "en": "Order urgent CT before stabilization",
+            "fr": "Demander un scanner urgent avant stabilisation"
+          },
+          "next": "n2",
+          "effects": {
+            "default": {
+              "stability": -12,
+              "redFlags": 1,
+              "resources": 3
+            }
+          },
+          "nextNodeId": "n2"
+        },
+        {
+          "id": "delay_reassess_1",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n2",
+          "effects": {
+            "default": {
+              "stability": -8,
+              "delay": 1,
+              "redFlags": 1
+            }
+          },
+          "nextNodeId": "n2"
+        }
+      ]
+    },
+    {
+      "id": "n2",
+      "background": "icu",
+      "speaker": "patient",
+      "text": {
+        "en": "The patient reports worsening symptoms. You need to define a working diagnosis.",
+        "fr": "Le patient rapporte une aggravation des symptômes. Vous devez définir un diagnostic de travail."
+      },
+      "labs": {
+        "en": "ABG: pH 7.28 / PaCO2 30 / HCO3 14",
+        "fr": "GDS : pH 7,28 / PaCO2 30 / HCO3 14"
+      },
+      "choices": [
+        {
+          "id": "correct_dx",
+          "text": {
+            "en": "Prioritize aki_ckd as leading diagnosis",
+            "fr": "Prioriser aki_ckd comme diagnostic principal"
+          },
+          "next": "n3",
+          "effects": {
+            "default": {
+              "setDx": "aki_ckd",
+              "stability": 5,
+              "critical": true
+            }
+          },
+          "nextNodeId": "n3"
+        },
+        {
+          "id": "wrong_dx",
+          "text": {
+            "en": "Commit to an unrelated diagnosis",
+            "fr": "Retenir un diagnostic non pertinent"
+          },
+          "next": "n3",
+          "effects": {
+            "default": {
+              "stability": -10,
+              "redFlags": 1
+            }
+          },
+          "nextNodeId": "n3"
+        },
+        {
+          "id": "delay_reassess_2",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n3",
+          "effects": {
+            "default": {
+              "stability": -8,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "n3"
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "BOSS NODE: choose definitive immediate management.",
+        "fr": "NOEUD BOSS : choisir la prise en charge immédiate définitive."
+      },
+      "dosing": {
+        "en": "Educational only: typical adult range 500-1000 mL balanced crystalloid bolus; vasoactive support per protocol.",
+        "fr": "Éducatif uniquement : plage adulte typique 500-1000 mL de cristalloïde équilibré; support vasoactif selon protocole."
+      },
+      "choices": [
+        {
+          "id": "best_management",
+          "text": {
+            "en": "Initiate guideline-concordant immediate treatment bundle",
+            "fr": "Initier le bundle thérapeutique conforme aux recommandations"
+          },
+          "next": "n4",
+          "effects": {
+            "MED3": {
+              "stability": 12,
+              "critical": true,
+              "resources": 1
+            },
+            "INTERN": {
+              "stability": 10,
+              "critical": true,
+              "resources": 1
+            },
+            "PGY1": {
+              "stability": 8,
+              "critical": true,
+              "resources": 2
+            },
+            "PGY4": {
+              "stability": 6,
+              "critical": true,
+              "resources": 2
+            },
+            "SPECIALIST": {
+              "stability": 5,
+              "critical": true,
+              "resources": 2
+            }
+          },
+          "nextNodeId": "n4"
+        },
+        {
+          "id": "suboptimal_management",
+          "text": {
+            "en": "Use partial treatment only",
+            "fr": "Utiliser un traitement partiel seulement"
+          },
+          "next": "n4",
+          "effects": {
+            "default": {
+              "stability": -6,
+              "redFlags": 1,
+              "resources": 1
+            }
+          },
+          "nextNodeId": "n4"
+        },
+        {
+          "id": "delay_reassess_3",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n4",
+          "effects": {
+            "default": {
+              "stability": -10,
+              "delay": 1,
+              "redFlags": 1
+            }
+          },
+          "nextNodeId": "n4"
+        }
+      ]
+    },
+    {
+      "id": "n4",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Repeat labs return. You must prioritize next investigation while conserving resources.",
+        "fr": "Les bilans de contrôle reviennent. Vous devez prioriser l'examen suivant en conservant les ressources."
+      },
+      "labs": {
+        "en": "Lactate 3.8, Creatinine 2.1, K 5.9",
+        "fr": "Lactate 3,8, Créatinine 2,1, K 5,9"
+      },
+      "choices": [
+        {
+          "id": "targeted_test",
+          "text": {
+            "en": "Order targeted bedside tests only",
+            "fr": "Demander des examens ciblés au lit"
+          },
+          "next": "n5",
+          "effects": {
+            "default": {
+              "stability": 4,
+              "resources": 1
+            }
+          },
+          "nextNodeId": "n5"
+        },
+        {
+          "id": "pan_scan",
+          "text": {
+            "en": "Order broad non-targeted investigations",
+            "fr": "Demander des explorations larges non ciblées"
+          },
+          "next": "n5",
+          "effects": {
+            "default": {
+              "stability": -4,
+              "resources": 4
+            }
+          },
+          "nextNodeId": "n5"
+        },
+        {
+          "id": "delay_reassess_4",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n5",
+          "effects": {
+            "default": {
+              "stability": -8,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "n5"
+        }
+      ]
+    },
+    {
+      "id": "n5",
+      "background": "clinic",
+      "speaker": "patient",
+      "text": {
+        "en": "Clinical response is mixed. You need to reassess trajectory and communicate plan.",
+        "fr": "La réponse clinique est mitigée. Vous devez réévaluer l'évolution et communiquer le plan."
+      },
+      "choices": [
+        {
+          "id": "structured_reassess",
+          "text": {
+            "en": "Structured reassessment and escalation trigger",
+            "fr": "Réévaluation structurée et déclenchement d'escalade"
+          },
+          "next": "n6",
+          "effects": {
+            "default": {
+              "stability": 6,
+              "critical": true
+            }
+          },
+          "nextNodeId": "n6"
+        },
+        {
+          "id": "wait_and_see",
+          "text": {
+            "en": "Wait without escalation",
+            "fr": "Attendre sans escalade"
+          },
+          "next": "n6",
+          "effects": {
+            "default": {
+              "stability": -7,
+              "redFlags": 1
+            }
+          },
+          "nextNodeId": "n6"
+        },
+        {
+          "id": "delay_reassess_5",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n6",
+          "effects": {
+            "default": {
+              "stability": -9,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "n6"
+        }
+      ]
+    },
+    {
+      "id": "n6",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "BOSS NODE: final high-stakes decision before disposition.",
+        "fr": "NOEUD BOSS : décision finale à haut risque avant l'orientation."
+      },
+      "choices": [
+        {
+          "id": "safe_disposition",
+          "text": {
+            "en": "Choose safest disposition and monitoring intensity",
+            "fr": "Choisir l'orientation la plus sûre et le niveau de surveillance"
+          },
+          "next": "n7",
+          "effects": {
+            "default": {
+              "stability": 8,
+              "critical": true
+            }
+          },
+          "nextNodeId": "n7"
+        },
+        {
+          "id": "unsafe_disposition",
+          "text": {
+            "en": "Under-triage disposition",
+            "fr": "Sous-triage du patient"
+          },
+          "next": "n7",
+          "effects": {
+            "default": {
+              "stability": -12,
+              "redFlags": 2
+            }
+          },
+          "nextNodeId": "n7"
+        },
+        {
+          "id": "delay_reassess_6",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n7",
+          "effects": {
+            "default": {
+              "stability": -10,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "n7"
+        }
+      ]
+    },
+    {
+      "id": "n7",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Final checks complete. Confirm diagnosis and submit final orders.",
+        "fr": "Vérifications finales terminées. Confirmer le diagnostic et valider les prescriptions."
+      },
+      "choices": [
+        {
+          "id": "confirm_dx",
+          "text": {
+            "en": "Confirm aki_ckd and complete orders",
+            "fr": "Confirmer aki_ckd et finaliser les prescriptions"
+          },
+          "next": "n8",
+          "effects": {
+            "default": {
+              "setDx": "aki_ckd",
+              "stability": 3
+            }
+          },
+          "nextNodeId": "n8"
+        },
+        {
+          "id": "change_wrong_dx",
+          "text": {
+            "en": "Switch to wrong diagnosis",
+            "fr": "Changer vers un mauvais diagnostic"
+          },
+          "next": "n8",
+          "effects": {
+            "default": {
+              "stability": -6,
+              "redFlags": 1
+            }
+          },
+          "nextNodeId": "n8"
+        },
+        {
+          "id": "delay_reassess_7",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "n8",
+          "effects": {
+            "default": {
+              "stability": -8,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "n8"
+        }
+      ]
+    },
+    {
+      "id": "n8",
+      "background": "clinic",
+      "speaker": "attending",
+      "text": {
+        "en": "Case wrap-up and handover.",
+        "fr": "Clôture du cas et transmission."
+      },
+      "choices": [
+        {
+          "id": "complete_case",
+          "text": {
+            "en": "Complete case",
+            "fr": "Terminer le cas"
+          },
+          "next": "END",
+          "effects": {
+            "default": {
+              "stability": 0
+            }
+          },
+          "nextNodeId": "END"
+        },
+        {
+          "id": "delay_reassess_8",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "next": "END",
+          "effects": {
+            "default": {
+              "stability": -5,
+              "delay": 1
+            }
+          },
+          "nextNodeId": "END"
+        }
+      ],
+      "terminalOutcome": "neutral"
+    }
+  ],
+  "debrief": {
+    "wentWell": {
+      "en": "Early stabilization and targeted diagnostics improved trajectory.",
+      "fr": "La stabilisation précoce et les examens ciblés ont amélioré l'évolution."
+    },
+    "misses": {
+      "en": "Delayed escalation and missed red flags worsen outcomes.",
+      "fr": "Le retard d'escalade et les drapeaux rouges manqués aggravent le pronostic."
+    },
+    "idealPlan": {
+      "en": "Reassess frequently, confirm diagnosis, treat promptly, and choose safe disposition.",
+      "fr": "Réévaluer fréquemment, confirmer le diagnostic, traiter rapidement et choisir une orientation sûre."
+    }
+  }
+}
