@@ -1,0 +1,117 @@
+{
+  "id": "test_case_001",
+  "title": {
+    "en": "Deterministic Test Case",
+    "fr": "Cas de test déterministe"
+  },
+  "specialty": "Test",
+  "topics": [
+    "test",
+    "stability"
+  ],
+  "startNode": "n1",
+  "correctDiagnosis": "test_success",
+  "criticalActionCount": 1,
+  "difficultyEffects": {
+    "MED3": { "clarity": "high", "penalty": "low", "timer": 0 },
+    "INTERN": { "clarity": "high", "penalty": "medium", "timer": 25 },
+    "PGY1": { "clarity": "medium", "penalty": "medium", "timer": 20 },
+    "PGY4": { "clarity": "low", "penalty": "high", "timer": 15 },
+    "SPECIALIST": { "clarity": "minimal", "penalty": "high", "timer": 12 }
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Test patient arrives. Choose the immediate action.",
+        "fr": "Le patient test arrive. Choisissez l'action immédiate."
+      },
+      "choices": [
+        {
+          "id": "good_choice",
+          "text": {
+            "en": "Stabilize and proceed",
+            "fr": "Stabiliser et continuer"
+          },
+          "nextNodeId": "n2",
+          "effects": {
+            "default": { "stability": 5, "critical": true, "setDx": "test_success" }
+          }
+        },
+        {
+          "id": "bad_choice",
+          "text": {
+            "en": "Delay care",
+            "fr": "Retarder la prise en charge"
+          },
+          "nextNodeId": "n3",
+          "effects": {
+            "default": { "stability": -15, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n2",
+      "background": "clinic",
+      "speaker": "attending",
+      "text": {
+        "en": "Terminal success node reached.",
+        "fr": "Noeud terminal de succès atteint."
+      },
+      "choices": [
+        {
+          "id": "end_success",
+          "text": {
+            "en": "Complete case",
+            "fr": "Terminer le cas"
+          },
+          "nextNodeId": "END",
+          "effects": {
+            "default": { "stability": 0 }
+          }
+        }
+      ],
+      "terminalOutcome": "success"
+    },
+    {
+      "id": "n3",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "Terminal failure node reached.",
+        "fr": "Noeud terminal d'échec atteint."
+      },
+      "choices": [
+        {
+          "id": "end_failure",
+          "text": {
+            "en": "Complete case",
+            "fr": "Terminer le cas"
+          },
+          "nextNodeId": "END",
+          "effects": {
+            "default": { "stability": -5 }
+          }
+        }
+      ],
+      "terminalOutcome": "poor"
+    }
+  ],
+  "debrief": {
+    "wentWell": {
+      "en": "You completed the deterministic shell path.",
+      "fr": "Vous avez terminé le parcours déterministe."
+    },
+    "misses": {
+      "en": "Failure path shows the fallback debrief behavior.",
+      "fr": "Le parcours d'échec montre le comportement de débriefing de secours."
+    },
+    "idealPlan": {
+      "en": "Choose the stabilization option at node 1.",
+      "fr": "Choisir l'option de stabilisation au noeud 1."
+    }
+  }
+}

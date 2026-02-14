@@ -4,43 +4,45 @@ label before_main_menu:
     return
 
 label start:
-    scene black
-    call hub
+    call screen mvp_main_menu
     return
-
-label hub:
-    menu:
-        "CLINICAL DOMINION — Master the Case.":
-            pass
-        "Play":
-            call screen choose_case_screen
-            jump hub
-        "Case Library":
-            call screen case_library_screen
-            jump hub
-        "Profile":
-            call screen profile_screen
-            jump hub
-        "Settings":
-            call screen custom_settings
-            jump hub
-        "Credits":
-            call screen credits_screen
-            jump hub
-        "Leaderboard":
-            call screen leaderboard_screen
-            jump hub
-        "Diagnostics":
-            jump diagnostics
-        "Quit":
-            return
 
 label start_selected_case:
     if selected_case is None:
         $ renpy.notify(_("No case selected."))
-        jump hub
-    $ start_case_runtime(selected_case, selected_difficulty)
+        jump start
+
+    python:
+        try:
+            start_case_runtime(selected_case, selected_difficulty)
+        except Exception:
+            renpy.call_screen("runtime_error_screen", _("Failed to start case safely."))
+            renpy.jump("start")
+
     jump run_case
+
+screen mvp_main_menu():
+    tag menu
+    add Solid("#0f172a")
+
+    frame style "panel_frame":
+        xalign 0.5
+        yalign 0.45
+        xsize 900
+        has vbox
+        spacing 12
+
+        text "CLINICAL DOMINION" size 48 xalign 0.5
+        text "Master the Case." size 28 xalign 0.5
+
+        textbutton _("Play") action If(len(all_cases) > 0, true=ShowMenu("choose_case_screen"), false=ShowMenu("case_load_error_screen"))
+        textbutton _("Case Library") action ShowMenu("case_library_screen")
+        textbutton _("Profile") action ShowMenu("profile_screen")
+        textbutton _("Settings") action ShowMenu("custom_settings")
+        textbutton _("Credits") action ShowMenu("credits_screen")
+        textbutton _("Quit") action Quit(confirm=False)
+
+    text "Clinical Dominion v0.1" xalign 0.5 yalign 0.97 size 22
 
 screen custom_settings():
     tag menu
@@ -102,4 +104,4 @@ screen credits_screen():
 
 init python:
     config.name = "CLINICAL DOMINION"
-    config.version = "1.1.0"
+    config.version = "0.1"

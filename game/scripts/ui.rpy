@@ -147,3 +147,33 @@ screen choose_case_screen():
                 If(selected_case is not None, true=Jump("start_selected_case"))
             ]
             textbutton _("Back") action MainMenu()
+
+
+screen case_load_error_screen():
+    tag menu
+    add Solid("#1f2937")
+    frame style "panel_frame":
+        xalign 0.5
+        yalign 0.5
+        xsize 1000
+        has vbox
+        spacing 10
+        text _("Case loading issue") size 38
+        text _("One or more case files failed validation. The game stayed safe and did not crash.")
+        if diagnostics_errors:
+            for err in diagnostics_errors:
+                text err size 20
+        textbutton _("Open Diagnostics") action ShowMenu("diagnostics_screen")
+        textbutton _("Back to Main Menu") action Return()
+
+screen runtime_error_screen(message):
+    modal True
+    frame style "panel_frame":
+        xalign 0.5
+        yalign 0.5
+        xsize 1100
+        has vbox
+        spacing 10
+        text _("Safe Runtime Fallback") size 36
+        text "[message]"
+        textbutton _("Continue to Debrief") action Return()

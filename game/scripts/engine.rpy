@@ -150,7 +150,7 @@ label run_case:
     while current_node != "END":
         $ node = case_nodes.get(current_node)
         if node is None:
-            $ renpy.notify("Case graph error")
+            call screen runtime_error_screen(_("Case graph error. Moving safely to debrief."))
             jump end_case
 
         $ game_state["stepIndex"] += 1
@@ -170,8 +170,17 @@ label run_case:
             if choice is None:
                 $ current_node = "END"
             else:
-                $ apply_effects(choice)
-                $ current_node = choice.get("nextNodeId", choice.get("next", "END"))
+                python:
+                    try:
+                        apply_effects(choice)
+                        nxt = choice.get("nextNodeId", choice.get("next"))
+                    except Exception:
+                        nxt = None
+                if not nxt:
+                    call screen runtime_error_screen(_("Choice is missing nextNodeId. Moving safely to debrief."))
+                    $ current_node = "END"
+                else:
+                    $ current_node = nxt
 
     label end_case:
         $ debrief_data = score_case(selected_case)

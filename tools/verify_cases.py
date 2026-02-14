@@ -21,6 +21,7 @@ def validate_case(path: Path):
         return [f"{path.name}: invalid json: {exc}"]
 
     required = ["id", "title", "specialty", "difficultyEffects", "topics", "startNode", "nodes", "debrief", "correctDiagnosis"]
+    is_test_case = str(data.get("id", "")).startswith("test_case_")
     for key in required:
         if key not in data:
             err(errors, path.name, f"missing top-level key '{key}'")
@@ -40,8 +41,9 @@ def validate_case(path: Path):
         err(errors, path.name, f"difficultyEffects must contain exactly {sorted(DIFFS)}")
 
     nodes = data.get("nodes") or []
-    if not (8 <= len(nodes) <= 12):
-        err(errors, path.name, f"expected 8-12 nodes, found {len(nodes)}")
+    min_nodes = 3 if is_test_case else 8
+    if not (min_nodes <= len(nodes) <= 12):
+        err(errors, path.name, f"expected {min_nodes}-12 nodes, found {len(nodes)}")
 
     node_ids = set()
     boss_count = 0
@@ -113,7 +115,7 @@ def validate_case(path: Path):
     if non_terminal_dead_ends:
         err(errors, path.name, f"non-terminal dead-end nodes: {non_terminal_dead_ends}")
 
-    if boss_count < 1:
+    if (not is_test_case) and boss_count < 1:
         err(errors, path.name, "at least 1 boss node required")
     if terminal_nodes < 1:
         err(errors, path.name, "at least 1 terminal node required")
@@ -127,8 +129,9 @@ def main():
         return 2
 
     files = sorted(CASES_DIR.glob("*.json"))
-    if len(files) != 10:
-        print(f"ERROR: expected 10 seed cases, found {len(files)}")
+    if len(files) < 10:
+        print(f"ERROR: expected at least 10 cases, found {len(files)}")
+        return 1
 
     all_errors = []
     for f in files:

@@ -3,7 +3,7 @@
 label automated_smoke_test:
     $ ensure_profile_defaults()
     $ all_cases, diagnostics_errors = load_all_cases()
-    $ assert len(all_cases) == 10, "Expected 10 seed cases"
+    $ assert len(all_cases) >= 10, "Expected at least 10 cases"
     $ assert len(diagnostics_errors) == 0, "Diagnostics should be clean"
 
     # Language toggle checks
