@@ -1,0 +1,229 @@
+{
+  "id": "template_case_id",
+  "title": {
+    "en": "Template Case Title",
+    "fr": "Titre du cas modèle"
+  },
+  "specialty": "Template",
+  "topics": [
+    "template",
+    "stabilization"
+  ],
+  "startNode": "n1",
+  "correctDiagnosis": "template_dx",
+  "criticalActionCount": 4,
+  "difficultyEffects": {
+    "MED3": { "clarity": "high", "penalty": "low", "timer": 0 },
+    "INTERN": { "clarity": "high", "penalty": "medium", "timer": 25 },
+    "PGY1": { "clarity": "medium", "penalty": "medium", "timer": 20 },
+    "PGY4": { "clarity": "low", "penalty": "high", "timer": 15 },
+    "SPECIALIST": { "clarity": "minimal", "penalty": "high", "timer": 12 }
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "background": "er",
+      "speaker": "nurse",
+      "text": {
+        "en": "Initial presentation. Add your bilingual opening narrative.",
+        "fr": "Présentation initiale. Ajoutez votre narration bilingue d'ouverture."
+      },
+      "labs": {
+        "en": "Labs/ABG placeholder: pH __ / PaCO2 __ / HCO3 __",
+        "fr": "Bilans/GDS placeholder : pH __ / PaCO2 __ / HCO3 __"
+      },
+      "choices": [
+        {
+          "id": "n1_choice_a",
+          "text": { "en": "Choice A", "fr": "Choix A" },
+          "nextNodeId": "n2",
+          "effects": { "default": { "stability": 4, "resources": 1 } }
+        },
+        {
+          "id": "n1_choice_b",
+          "text": { "en": "Choice B", "fr": "Choix B" },
+          "nextNodeId": "n2",
+          "effects": { "default": { "stability": -5, "redFlags": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "n2",
+      "background": "icu",
+      "speaker": "patient",
+      "text": {
+        "en": "Add focused reassessment and targeted differential details.",
+        "fr": "Ajoutez une réévaluation ciblée et les éléments du diagnostic différentiel."
+      },
+      "labs": {
+        "en": "Additional labs/ABG placeholder",
+        "fr": "Placeholder bilans/GDS supplémentaires"
+      },
+      "choices": [
+        {
+          "id": "n2_choice_a",
+          "text": { "en": "Advance with likely diagnosis", "fr": "Avancer avec le diagnostic probable" },
+          "nextNodeId": "n3",
+          "effects": { "default": { "setDx": "template_dx", "critical": true, "stability": 5 } }
+        },
+        {
+          "id": "n2_choice_b",
+          "text": { "en": "Miss key clue", "fr": "Manquer l'indice clé" },
+          "nextNodeId": "n3",
+          "effects": { "default": { "stability": -6, "redFlags": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "BOSS NODE: Add your high-stakes decision narrative here.",
+        "fr": "NOEUD BOSS : Ajoutez ici votre narration de décision à haut risque."
+      },
+      "dosing": {
+        "en": "Educational only — verify with guidelines. Optional dosing text.",
+        "fr": "Éducatif uniquement — vérifier avec les recommandations. Texte de dosage optionnel."
+      },
+      "choices": [
+        {
+          "id": "n3_choice_a",
+          "text": { "en": "Best immediate action", "fr": "Meilleure action immédiate" },
+          "nextNodeId": "n4",
+          "effects": { "default": { "critical": true, "stability": 8 } }
+        },
+        {
+          "id": "n3_choice_b",
+          "text": { "en": "Suboptimal action", "fr": "Action sous-optimale" },
+          "nextNodeId": "n4",
+          "effects": { "default": { "stability": -8, "redFlags": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "n4",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Add resource management decision.",
+        "fr": "Ajoutez une décision de gestion des ressources."
+      },
+      "choices": [
+        {
+          "id": "n4_choice_a",
+          "text": { "en": "Targeted test", "fr": "Examen ciblé" },
+          "nextNodeId": "n5",
+          "effects": { "default": { "resources": 1, "stability": 3 } }
+        },
+        {
+          "id": "n4_choice_b",
+          "text": { "en": "Overuse resources", "fr": "Surconsommer les ressources" },
+          "nextNodeId": "n5",
+          "effects": { "default": { "resources": 4, "stability": -3 } }
+        }
+      ]
+    },
+    {
+      "id": "n5",
+      "background": "clinic",
+      "speaker": "patient",
+      "text": {
+        "en": "Add response-to-treatment checkpoint.",
+        "fr": "Ajoutez un point de contrôle de réponse au traitement."
+      },
+      "choices": [
+        {
+          "id": "n5_choice_a",
+          "text": { "en": "Escalate appropriately", "fr": "Escalader de manière appropriée" },
+          "nextNodeId": "n6",
+          "effects": { "default": { "critical": true, "stability": 4 } }
+        },
+        {
+          "id": "n5_choice_b",
+          "text": { "en": "Delay escalation", "fr": "Retarder l'escalade" },
+          "nextNodeId": "n6",
+          "effects": { "default": { "delay": 1, "stability": -6 } }
+        }
+      ]
+    },
+    {
+      "id": "n6",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "Second critical decision before disposition.",
+        "fr": "Deuxième décision critique avant l'orientation."
+      },
+      "choices": [
+        {
+          "id": "n6_choice_a",
+          "text": { "en": "Safe plan", "fr": "Plan sûr" },
+          "nextNodeId": "n7",
+          "effects": { "default": { "critical": true, "stability": 6 } }
+        },
+        {
+          "id": "n6_choice_b",
+          "text": { "en": "Unsafe plan", "fr": "Plan non sûr" },
+          "nextNodeId": "n7",
+          "effects": { "default": { "stability": -9, "redFlags": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "n7",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Final confirmation node.",
+        "fr": "Noeud de confirmation final."
+      },
+      "choices": [
+        {
+          "id": "n7_choice_a",
+          "text": { "en": "Confirm diagnosis", "fr": "Confirmer le diagnostic" },
+          "nextNodeId": "n8",
+          "effects": { "default": { "setDx": "template_dx", "stability": 2 } }
+        },
+        {
+          "id": "n7_choice_b",
+          "text": { "en": "Confirm wrong diagnosis", "fr": "Confirmer un mauvais diagnostic" },
+          "nextNodeId": "n8",
+          "effects": { "default": { "stability": -4, "redFlags": 1 } }
+        }
+      ]
+    },
+    {
+      "id": "n8",
+      "background": "clinic",
+      "speaker": "attending",
+      "text": {
+        "en": "Terminal node placeholder.",
+        "fr": "Placeholder de noeud terminal."
+      },
+      "choices": [
+        {
+          "id": "n8_end",
+          "text": { "en": "Complete case", "fr": "Terminer le cas" },
+          "nextNodeId": "END",
+          "effects": { "default": { "stability": 0 } }
+        }
+      ],
+      "terminalOutcome": "neutral"
+    }
+  ],
+  "debrief": {
+    "wentWell": {
+      "en": "Add what went well in EN.",
+      "fr": "Ajoutez ce qui s'est bien passé en FR."
+    },
+    "misses": {
+      "en": "Add critical misses in EN.",
+      "fr": "Ajoutez les manques critiques en FR."
+    },
+    "idealPlan": {
+      "en": "Add ideal management plan in EN.",
+      "fr": "Ajoutez le plan de prise en charge idéal en FR."
+    }
+  }
+}

@@ -1,0 +1,312 @@
+{
+  "id": "test_golden_001",
+  "title": {
+    "en": "Golden Path: Hyperkalemia Rescue",
+    "fr": "Parcours de référence : sauvetage d'hyperkaliémie"
+  },
+  "specialty": "Nephrology",
+  "topics": [
+    "nephrology",
+    "hyperkalemia",
+    "acid-base",
+    "consult"
+  ],
+  "startNode": "n1",
+  "correctDiagnosis": "severe_hyperkalemia",
+  "criticalActionCount": 5,
+  "difficultyEffects": {
+    "MED3": { "clarity": "high", "penalty": "low", "timer": 0 },
+    "INTERN": { "clarity": "high", "penalty": "medium", "timer": 25 },
+    "PGY1": { "clarity": "medium", "penalty": "medium", "timer": 20 },
+    "PGY4": { "clarity": "low", "penalty": "high", "timer": 15 },
+    "SPECIALIST": { "clarity": "minimal", "penalty": "high", "timer": 12 }
+  },
+  "nodes": [
+    {
+      "id": "n1",
+      "background": "er",
+      "speaker": "nurse",
+      "text": {
+        "en": "A dialysis patient arrives with weakness and palpitations. You lead initial triage.",
+        "fr": "Un patient dialysé arrive avec faiblesse et palpitations. Vous dirigez le tri initial."
+      },
+      "labs": {
+        "en": "ECG: peaked T waves. K 6.9 mmol/L.",
+        "fr": "ECG : ondes T pointues. K 6,9 mmol/L."
+      },
+      "choices": [
+        {
+          "id": "abc_monitor",
+          "text": {
+            "en": "Start ABC assessment + monitor + IV access",
+            "fr": "Démarrer évaluation ABC + monitorage + voie IV"
+          },
+          "nextNodeId": "n2",
+          "effects": {
+            "default": { "stability": 8, "critical": true, "resources": 1 }
+          }
+        },
+        {
+          "id": "delay_reassess_1",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "nextNodeId": "n2",
+          "effects": {
+            "default": { "stability": -8, "delay": 1, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n2",
+      "background": "icu",
+      "speaker": "patient",
+      "text": {
+        "en": "You receive urgent blood gas and chemistry. Interpret quickly.",
+        "fr": "Vous recevez les gaz du sang et la biologie urgente. Interprétez rapidement."
+      },
+      "labs": {
+        "en": "ABG: pH 7.24 / PaCO2 31 / HCO3 13. Cr 5.1, K 7.1.",
+        "fr": "GDS : pH 7,24 / PaCO2 31 / HCO3 13. Cr 5,1, K 7,1."
+      },
+      "choices": [
+        {
+          "id": "dx_hyperk",
+          "text": {
+            "en": "Prioritize severe hyperkalemia with metabolic acidosis",
+            "fr": "Prioriser hyperkaliémie sévère avec acidose métabolique"
+          },
+          "nextNodeId": "n3",
+          "effects": {
+            "default": { "setDx": "severe_hyperkalemia", "critical": true, "stability": 6 }
+          }
+        },
+        {
+          "id": "dx_wrong",
+          "text": {
+            "en": "Treat as isolated anxiety episode",
+            "fr": "Traiter comme épisode anxieux isolé"
+          },
+          "nextNodeId": "n3",
+          "effects": {
+            "default": { "stability": -10, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n3",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "BOSS NODE: choose immediate life-saving bundle.",
+        "fr": "NOEUD BOSS : choisir le bundle de sauvetage immédiat."
+      },
+      "dosing": {
+        "en": "Educational only — verify with guidelines. Typical adult options: IV calcium, insulin+dextrose, nebulized beta-agonist.",
+        "fr": "Éducatif uniquement — vérifier avec les recommandations. Options adultes typiques : calcium IV, insuline+glucose, bêta-agoniste nébulisé."
+      },
+      "choices": [
+        {
+          "id": "bundle_complete",
+          "text": {
+            "en": "Give full stabilization bundle now",
+            "fr": "Administrer immédiatement le bundle complet"
+          },
+          "nextNodeId": "n4",
+          "effects": {
+            "default": { "critical": true, "stability": 10, "resources": 2 }
+          }
+        },
+        {
+          "id": "delay_reassess_2",
+          "isDelay": true,
+          "text": {
+            "en": "Delay / Reassess",
+            "fr": "Retarder / Réévaluer"
+          },
+          "nextNodeId": "n4",
+          "effects": {
+            "default": { "stability": -12, "delay": 1, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n4",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Select next step while resources are limited.",
+        "fr": "Choisissez l'étape suivante avec des ressources limitées."
+      },
+      "choices": [
+        {
+          "id": "consult_neph",
+          "text": {
+            "en": "Call nephrology consult for urgent dialysis planning",
+            "fr": "Appeler la néphrologie pour planifier une dialyse urgente"
+          },
+          "nextNodeId": "n5",
+          "effects": {
+            "default": { "critical": true, "stability": 5, "resources": 1 }
+          }
+        },
+        {
+          "id": "no_consult",
+          "text": {
+            "en": "Continue without consult",
+            "fr": "Continuer sans avis spécialisé"
+          },
+          "nextNodeId": "n5",
+          "effects": {
+            "default": { "stability": -6, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n5",
+      "background": "clinic",
+      "speaker": "patient",
+      "text": {
+        "en": "Recheck after temporizing treatment.",
+        "fr": "Contrôle après traitement de temporisation."
+      },
+      "labs": {
+        "en": "K 6.2 mmol/L, pH 7.29, telemetry still irritable.",
+        "fr": "K 6,2 mmol/L, pH 7,29, télémétrie encore irritable."
+      },
+      "choices": [
+        {
+          "id": "prepare_dialysis",
+          "text": {
+            "en": "Prepare definitive potassium removal",
+            "fr": "Préparer l'élimination définitive du potassium"
+          },
+          "nextNodeId": "n6",
+          "effects": {
+            "default": { "critical": true, "stability": 6 }
+          }
+        },
+        {
+          "id": "wait_only",
+          "text": {
+            "en": "Wait without escalation",
+            "fr": "Attendre sans escalade"
+          },
+          "nextNodeId": "n6",
+          "effects": {
+            "default": { "stability": -7, "delay": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n6",
+      "background": "icu",
+      "speaker": "attending",
+      "text": {
+        "en": "Disposition decision before transfer.",
+        "fr": "Décision d'orientation avant transfert."
+      },
+      "choices": [
+        {
+          "id": "safe_disposition",
+          "text": {
+            "en": "Admit to monitored unit with dialysis pathway",
+            "fr": "Admettre en unité monitorée avec filière dialyse"
+          },
+          "nextNodeId": "n7",
+          "effects": {
+            "default": { "stability": 5, "critical": true }
+          }
+        },
+        {
+          "id": "unsafe_disposition",
+          "text": {
+            "en": "Send to low-acuity bed",
+            "fr": "Orienter vers lit de faible acuité"
+          },
+          "nextNodeId": "n7",
+          "effects": {
+            "default": { "stability": -10, "redFlags": 2 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n7",
+      "background": "ward",
+      "speaker": "nurse",
+      "text": {
+        "en": "Final confirmation of working diagnosis and orders.",
+        "fr": "Confirmation finale du diagnostic de travail et des ordonnances."
+      },
+      "choices": [
+        {
+          "id": "confirm_dx",
+          "text": {
+            "en": "Confirm severe hyperkalemia diagnosis",
+            "fr": "Confirmer le diagnostic d'hyperkaliémie sévère"
+          },
+          "nextNodeId": "n8",
+          "effects": {
+            "default": { "setDx": "severe_hyperkalemia", "stability": 2 }
+          }
+        },
+        {
+          "id": "change_dx_wrong",
+          "text": {
+            "en": "Change to incorrect diagnosis",
+            "fr": "Basculer vers un diagnostic erroné"
+          },
+          "nextNodeId": "n8",
+          "effects": {
+            "default": { "stability": -6, "redFlags": 1 }
+          }
+        }
+      ]
+    },
+    {
+      "id": "n8",
+      "background": "clinic",
+      "speaker": "attending",
+      "text": {
+        "en": "Case complete. Hand over plan and safety points.",
+        "fr": "Cas terminé. Transmettre le plan et les points de sécurité."
+      },
+      "choices": [
+        {
+          "id": "complete_case",
+          "text": {
+            "en": "Complete case",
+            "fr": "Terminer le cas"
+          },
+          "nextNodeId": "END",
+          "effects": {
+            "default": { "stability": 0 }
+          }
+        }
+      ],
+      "terminalOutcome": "success"
+    }
+  ],
+  "debrief": {
+    "wentWell": {
+      "en": "Rapid ECG recognition, full stabilization bundle, and early nephrology consult improved safety.",
+      "fr": "La reconnaissance ECG rapide, le bundle complet de stabilisation et l'avis précoce de néphrologie ont amélioré la sécurité."
+    },
+    "misses": {
+      "en": "Delays in hyperkalemia treatment increase arrhythmia risk.",
+      "fr": "Les retards de traitement de l'hyperkaliémie augmentent le risque d'arythmie."
+    },
+    "idealPlan": {
+      "en": "Stabilize membrane, shift potassium intracellularly, organize definitive removal, and ensure monitored disposition.",
+      "fr": "Stabiliser la membrane, faire entrer le potassium en intracellulaire, organiser l'élimination définitive et assurer une orientation monitorée."
+    }
+  }
+}
